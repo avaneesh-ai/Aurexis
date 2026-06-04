@@ -208,6 +208,31 @@ function decodeBase64Url(value) {
   return atob(padded);
 }
 
+function encodeBase64Url(value) {
+  const json = JSON.stringify(value);
+  const encoded = btoa(unescape(encodeURIComponent(json)));
+  return encoded.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function apiUrl(path) {
+  const scriptSrc = document.querySelector('script[src$="app.js"]')?.src || window.location.href;
+  return new URL(`./api/${path}`, new URL(".", scriptSrc)).toString();
+}
+
+function createClientLoginLink(profile) {
+  const token = encodeBase64Url({
+    email: profile.email,
+    name: profile.name,
+    mobile: profile.mobile,
+    iat: Date.now()
+  });
+  const loginUrl = new URL(window.location.href);
+  loginUrl.search = "";
+  loginUrl.hash = "";
+  loginUrl.searchParams.set("login_token", token);
+  return loginUrl.toString();
+}
+
 function decodeLoginToken() {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("login_token");
@@ -560,7 +585,7 @@ function hashString(value) {
 
 async function loadConfig() {
   try {
-    const response = await fetch("/api/config");
+    const response = await fetch(apiUrl("config"));
     const data = await response.json();
     state.subscription.paymentUrl = data.proPaymentUrl || state.subscription.paymentUrl || defaultPaymentUrl;
     persistSubscription();
@@ -631,7 +656,7 @@ async function syncCurrentRegistration() {
   saveLocalRegistration(record);
 
   try {
-    const response = await fetch("/api/registrations", {
+    const response = await fetch(apiUrl("registrations"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(record)
@@ -656,7 +681,7 @@ async function loadAdminUsers() {
   els.adminUpdatedAt.textContent = "Syncing...";
 
   try {
-    const response = await fetch("/api/registrations");
+    const response = await fetch(apiUrl("registrations"));
     const data = await response.json();
 
     if (Array.isArray(data.users)) {
@@ -690,7 +715,7 @@ function setView(viewName) {
 
 async function loadModels() {
   try {
-    const response = await fetch("/api/models");
+    const response = await fetch(apiUrl("models"));
     const data = await response.json();
     state.models = data.models?.length ? data.models : fallbackModels;
     state.selectedModel = localStorage.getItem(storageKeys.model) || data.defaultModel || state.models[0].id;
@@ -729,6 +754,40 @@ function loadingImage(prompt) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
+function clientPreviewImage(prompt) {
+  const seed = hashString(prompt);
+  const hueA = seed % 360;
+  const hueB = (hueA + 56) % 360;
+  const hueC = (hueA + 218) % 360;
+  const title = escapeHtml(prompt.slice(0, 72) || "Aurexis image");
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="832" viewBox="0 0 1280 832">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="hsl(${hueA}, 70%, 18%)"/>
+          <stop offset=".52" stop-color="hsl(${hueB}, 70%, 42%)"/>
+          <stop offset="1" stop-color="hsl(${hueC}, 78%, 58%)"/>
+        </linearGradient>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="22"/>
+        </filter>
+      </defs>
+      <rect width="1280" height="832" fill="url(#bg)"/>
+      <g opacity=".58" filter="url(#soft)">
+        <path d="M-48 618 C 180 412, 310 762, 536 558 S 858 188, 1328 354 L1328 872 L-48 872 Z" fill="hsl(${hueC}, 82%, 64%)"/>
+        <path d="M-80 180 C 210 42, 360 282, 584 170 S 906 -38, 1310 104" fill="none" stroke="hsl(${hueB}, 86%, 80%)" stroke-width="74"/>
+      </g>
+      <path d="M664 154 L926 416 L664 678 L402 416 Z" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.54)" stroke-width="3"/>
+      <circle cx="664" cy="416" r="76" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.62)" stroke-width="3"/>
+      <rect x="72" y="642" width="1136" height="112" rx="8" fill="rgba(8,16,18,.58)"/>
+      <text x="112" y="706" fill="white" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="700">${title}</text>
+      <text x="112" y="738" fill="rgba(255,255,255,.72)" font-family="Inter, Arial, sans-serif" font-size="18">Aurexis static visual preview</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
 async function createImageFromPrompt(prompt, source = "Image") {
   const imageRecord = {
     id: uid("image"),
@@ -742,20 +801,27 @@ async function createImageFromPrompt(prompt, source = "Image") {
   persistImages();
   renderImages();
 
-  const response = await fetch("/api/image", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, source })
-  });
-  const data = await response.json();
+  try {
+    const response = await fetch(apiUrl("image"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, source })
+    });
+    const data = await response.json();
 
-  if (!response.ok) {
-    throw new Error(data.detail || data.error || "Image generation failed.");
+    if (!response.ok) {
+      throw new Error(data.detail || data.error || "Image generation failed.");
+    }
+
+    imageRecord.imageUrl = data.imageUrl;
+    imageRecord.provider = data.provider || "image-api";
+    imageRecord.note = data.note || "";
+  } catch {
+    imageRecord.imageUrl = clientPreviewImage(prompt);
+    imageRecord.provider = "local-preview";
+    imageRecord.note = "Static preview generated because the image API is not available on this host.";
   }
 
-  imageRecord.imageUrl = data.imageUrl;
-  imageRecord.provider = data.provider || "image-api";
-  imageRecord.note = data.note || "";
   persistImages();
   renderImages();
   return imageRecord;
@@ -805,7 +871,7 @@ async function sendChat(prompt) {
 
   try {
     const project = state.projects.find((item) => item.id === chat.projectId);
-    const response = await fetch("/api/chat", {
+    const response = await fetch(apiUrl("chat"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -878,7 +944,7 @@ els.profileForm.addEventListener("submit", async (event) => {
   };
 
   try {
-    const response = await fetch("/api/send-login-link", {
+    const response = await fetch(apiUrl("send-login-link"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(profile)
@@ -897,7 +963,12 @@ els.profileForm.addEventListener("submit", async (event) => {
     els.previewLoginLink.href = data.loginLink;
     showAuthStep(els.linkSentPanel);
   } catch (error) {
-    els.authError.textContent = error.message;
+    const loginLink = createClientLoginLink(profile);
+    state.pendingUser = profile;
+    writeStorage(storageKeys.pendingUser, state.pendingUser);
+    els.linkSentText.textContent = "Email sending is in preview mode on this static page. Use this login link for now, or deploy to Vercel for email delivery.";
+    els.previewLoginLink.href = loginLink;
+    showAuthStep(els.linkSentPanel);
   } finally {
     submitButton.disabled = false;
     submitButton.textContent = "Send login link";

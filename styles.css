@@ -16,7 +16,7 @@
   --shadow: 0 22px 60px rgba(24, 35, 33, 0.12);
   --app-background:
     linear-gradient(120deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.28)),
-    url("/assets/bg-light.svg"),
+    url("./assets/bg-light.svg"),
     #f7fbff;
 }
 
@@ -38,7 +38,7 @@
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
   --app-background:
     linear-gradient(120deg, rgba(3, 7, 18, 0.12), rgba(8, 3, 23, 0.16)),
-    url("/assets/bg-dark.svg"),
+    url("./assets/bg-dark.svg"),
     #050613;
 }
 
@@ -179,7 +179,7 @@ a {
   position: relative;
   flex: 0 0 auto;
   border-radius: 8px;
-  background: #020308 url("/assets/aurexis-logo.svg") center / 118% 118% no-repeat;
+  background: #020308 url("./assets/aurexis-logo.svg") center / 118% 118% no-repeat;
   box-shadow: 0 0 18px rgba(34, 211, 238, 0.22), 0 10px 22px rgba(24, 35, 33, 0.18);
 }
 
