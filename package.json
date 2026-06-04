@@ -4,7 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node local-server.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
-  "dependencies": {}
+  "dependencies": {
+    "next": "16.2.7",
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
+  }
 }

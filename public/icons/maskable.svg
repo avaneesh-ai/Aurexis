@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Aurexis logo</title>
+  <desc id="desc">A neon A mark with cyan and violet orbital light trails.</desc>
+  <defs>
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#6df4ff" stop-opacity="1"/>
+      <stop offset=".42" stop-color="#7257ff" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#05070d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="aMetal" x1="120" y1="124" x2="392" y2="390" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".32" stop-color="#9aa7c7"/>
+      <stop offset=".62" stop-color="#f7f8ff"/>
+      <stop offset="1" stop-color="#4225a8"/>
+    </linearGradient>
+    <linearGradient id="cyanViolet" x1="82" y1="330" x2="430" y2="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00eaff"/>
+      <stop offset=".48" stop-color="#4978ff"/>
+      <stop offset="1" stop-color="#a948ff"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.25 0 0 0 0 0.88 0 0 0 0 1 0 0 0 .85 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#0a0d20" flood-opacity=".78"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="92" fill="#020308"/>
+  <circle cx="256" cy="268" r="150" fill="url(#coreGlow)" opacity=".42"/>
+  <g filter="url(#glow)" opacity=".96">
+    <path d="M82 350c44 54 116 6 174 6 68 0 104 72 174 20" fill="none" stroke="url(#cyanViolet)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M72 332c28-106 156-42 218-54 58-12 96-80 150-8 44 60-18 112-74 86" fill="none" stroke="url(#cyanViolet)" stroke-width="5" opacity=".88"/>
+    <path d="M116 372c82-90 188-86 280 10" fill="none" stroke="url(#cyanViolet)" stroke-width="5" opacity=".72"/>
+  </g>
+  <g filter="url(#softShadow)">
+    <path d="M118 360 240 114c10-20 24-32 40-32s30 12 40 32l128 262c6 13-4 28-18 28h-56c-8 0-15-5-18-12L280 228c-5-12-21-12-26 0l-72 152c-4 7-11 12-19 12h-47c-15 0-25-17-18-32Z" fill="url(#aMetal)"/>
+    <path d="M202 340c20-58 38-106 55-142 8-16 31-16 39 0l77 170c5 12-4 26-17 26h-47c-7 0-13-4-16-10l-26-56c-3-8-15-8-18 0l-24 52c-3 6-10 10-17 10h-42c-13 0-22-14-17-26Z" fill="#05070d"/>
+  </g>
+  <circle cx="256" cy="266" r="34" fill="url(#coreGlow)" filter="url(#glow)"/>
+</svg>

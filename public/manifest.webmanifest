@@ -1,0 +1,24 @@
+{
+  "name": "Aurexis",
+  "short_name": "Aurexis",
+  "description": "Aurexis AI workspace powered by Ollama",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f9ff",
+  "theme_color": "#5b3df5",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

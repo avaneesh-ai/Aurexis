@@ -1,39 +1,55 @@
 # Aurexis
 
-Aurexis is a Vercel-ready AI workspace with email-link onboarding, an Ollama-powered chatbot, projects, and generated image history.
+Aurexis is a deployable Next.js App Router workspace powered by Ollama. It includes email-link signup, a friendly streaming AI chatbot, Ollama model discovery, chat history, projects, a co-work canvas, settings, a $25/year Pro QR card, local admin unlock, and PWA installation support.
 
 ## Run Locally
 
 ```bash
+npm install
 npm run dev
 ```
 
 Open `http://localhost:3000`.
 
-## Vercel Environment Variables
+## Deploy On Vercel
 
-Set these in Vercel after importing the GitHub repository:
+Push this folder to GitHub, import it on Vercel, add the environment variables below, and deploy.
 
-- `OLLAMA_BASE_URL`: a public or private-network URL that Vercel can reach. `http://localhost:11434` only works on your own computer.
-- `OLLAMA_API_KEY`: optional bearer token if your Ollama gateway requires it.
-- `OLLAMA_DEFAULT_MODEL`: optional default model, such as `llama3.3`.
-- `APP_BASE_URL`: your deployed Vercel URL.
-- `RESEND_API_KEY` and `FROM_EMAIL`: optional, used to actually email the login link.
-- `IMAGE_GENERATION_API_URL` and `IMAGE_GENERATION_API_KEY`: optional, used for real image generation. Without it, the app creates a local visual preview from the prompt.
-- `PRO_PAYMENT_URL`: optional, used to build the Aurexis Pro QR code. Pro is shown as `$25/year`.
-- `AUREXIS_REGISTRY_FILE`: optional, used for local/server file storage of registered users.
+## Ollama Setup
 
-## Admin And Registration Storage
+For Ollama Cloud API access:
 
-The app saves the logged-in user on the device so they do not need to login again. The Admin tab is visible only on the local laptop/browser where admin access is enabled.
+```env
+OLLAMA_API_KEY=your_ollama_key
+OLLAMA_BASE_URL=https://ollama.com
+OLLAMA_DEFAULT_MODEL=gpt-oss:120b
+```
 
-`/api/registrations` stores registered user details without saving passwords. Locally it writes to `data/registered-users.json`; on serverless Vercel this may fall back to short-lived memory, so use a durable database or storage service if the Admin tab must show users from every device permanently.
+You can also leave `OLLAMA_BASE_URL` blank when `OLLAMA_API_KEY` is set; the app will automatically use `https://ollama.com`.
 
-## Ollama Notes
+For your own Ollama server:
 
-The app calls:
+```env
+OLLAMA_BASE_URL=https://your-reachable-ollama-host.example
+OLLAMA_DEFAULT_MODEL=llama3.3
+```
 
-- `GET /api/tags` on your Ollama host for installed models.
-- `POST /api/chat` on your Ollama host for chatbot replies.
+`http://localhost:11434` only works on the same computer. It will not work from Vercel unless you expose Ollama through a reachable URL.
 
-The model picker also includes popular choices from the Ollama model library so users can choose a model even before your server reports installed tags.
+## Environment Variables
+
+- `APP_BASE_URL`: your Vercel deployment URL.
+- `OLLAMA_BASE_URL`: your reachable Ollama host. Optional if using Ollama Cloud with `OLLAMA_API_KEY`.
+- `OLLAMA_API_KEY`: required for Ollama Cloud direct API access.
+- `OLLAMA_DEFAULT_MODEL`: default selected model, such as `llama3.3`.
+- `RESEND_API_KEY` and `FROM_EMAIL`: optional email delivery. Without them, the login link appears on screen.
+- `PRO_PAYMENT_URL`: payment URL encoded into the Pro QR code.
+- `ADMIN_KEY`: key required to unlock the Admin tab. Change the default before production.
+
+## Storage
+
+All local persistence runs through [lib/store.js](./lib/store.js). It uses browser `localStorage` by default, so data is per device. To make Admin show users across devices, replace the store layer with a shared database such as Vercel Postgres, Supabase, or Turso.
+
+## PWA
+
+The app includes [public/manifest.webmanifest](./public/manifest.webmanifest) and [public/sw.js](./public/sw.js). The service worker caches the app shell but never caches `/api/*` AI calls.
