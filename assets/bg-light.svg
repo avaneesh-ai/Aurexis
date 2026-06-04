@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7fdff"/>
+      <stop offset=".48" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#f8efff"/>
+    </linearGradient>
+    <linearGradient id="cyanPurple" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2ccdf5"/>
+      <stop offset=".55" stop-color="#bcd8ff"/>
+      <stop offset="1" stop-color="#b178ff"/>
+    </linearGradient>
+    <pattern id="dots" width="18" height="18" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#80c9ff" opacity=".42"/>
+    </pattern>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect x="0" y="0" width="1920" height="1080" fill="url(#dots)" opacity=".18"/>
+  <g opacity=".34" stroke="url(#cyanPurple)" stroke-width="1.4" fill="none">
+    <path d="M0 210 78 260v96l-78 46m78-306 76 44v90l-76 44m154-42 72 42v86l-72 42m151-330 76 44v88l-76 44"/>
+    <path d="M1460 170v338m82-430v340m92-272v386m88-210v294m-302-72 72 42 72-42 72 42 72-42"/>
+    <path d="M1542 622l64-38 64 38v76l-64 38-64-38Z"/>
+    <path d="M1720 282l78-46 78 46v92l-78 46-78-46Z"/>
+  </g>
+  <g opacity=".64">
+    <circle cx="92" cy="228" r="5" fill="#2ccdf5"/>
+    <circle cx="182" cy="182" r="4" fill="#38bdf8"/>
+    <circle cx="316" cy="370" r="5" fill="#4bbff6"/>
+    <circle cx="1474" cy="118" r="6" fill="#b178ff"/>
+    <circle cx="1710" cy="510" r="6" fill="#ba8cff"/>
+    <circle cx="1660" cy="312" r="5" fill="#b178ff"/>
+  </g>
+  <path d="M0 724c170-82 276-30 412-34 170-4 232-96 370-52 122 38 130 128 306 122 188-6 202-116 388-96 156 16 244 98 444-8v424H0Z" fill="#f9fdff" opacity=".9"/>
+  <path d="M0 684c202 24 340 92 514 46 160-42 278-126 460-50 220 92 300-8 458-28 172-22 288 48 488 10v418H0Z" fill="#f3f8ff" opacity=".76"/>
+  <path d="M0 782c186-60 334 12 502 18 220 8 326-86 512-40 148 36 298 88 504-20 146-76 248-28 402-56v396H0Z" fill="#f9f2ff" opacity=".72"/>
+  <g stroke="url(#cyanPurple)" stroke-width="1" fill="none" opacity=".54">
+    <path d="M-120 880c330-160 558 72 842-66 250-122 466-64 632 16 206 98 392-120 646-4"/>
+    <path d="M-120 916c332-132 552 52 834-50 260-94 428-58 650 24 218 82 398-88 656-22"/>
+    <path d="M-120 958c344-94 566 36 842-34 286-72 430-26 652 34 232 62 410-58 636-12"/>
+    <path d="M-120 1008c360-42 588 2 878-4 298-6 426 38 668 40 222 2 370-32 590-22"/>
+  </g>
+  <ellipse cx="936" cy="820" rx="420" ry="76" fill="#ffffff" opacity=".68" filter="url(#soft)"/>
+</svg>

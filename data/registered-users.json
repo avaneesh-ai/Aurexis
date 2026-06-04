@@ -1,0 +1,36 @@
+{
+  "users": [
+    {
+      "email": "test@aurexis.app",
+      "name": "Test User",
+      "mobile": "+91 98765 43210",
+      "plan": "Pro",
+      "deviceId": "device-mpz4cz05-jo6jl9",
+      "createdAt": "2026-06-04T06:33:28.390Z",
+      "lastLoginAt": "2026-06-04T06:22:58.787Z",
+      "settings": {
+        "themeMode": "dark",
+        "coWorkMode": true,
+        "projectSpeed": true,
+        "codeMode": true,
+        "friendlyMode": true
+      }
+    },
+    {
+      "email": "switch@aurexis.app",
+      "name": "Switch User",
+      "mobile": "+91 90000 00000",
+      "plan": "Pro",
+      "deviceId": "device-mpz4cz05-jo6jl9",
+      "createdAt": "2026-06-04T07:40:46.414Z",
+      "lastLoginAt": "2026-06-04T07:40:46.402Z",
+      "settings": {
+        "themeMode": "light",
+        "coWorkMode": true,
+        "projectSpeed": true,
+        "codeMode": true,
+        "friendlyMode": true
+      }
+    }
+  ]
+}

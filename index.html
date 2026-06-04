@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurexis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div id="authShell" class="auth-shell">
+      <section class="auth-brand" aria-label="Aurexis introduction">
+        <div class="logo-lockup logo-lockup-large">
+          <div class="aurexis-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div>
+            <p class="brand-kicker">Aurexis</p>
+            <h1>Build, chat, and create in one AI workspace.</h1>
+          </div>
+        </div>
+        <div class="brand-radar" aria-hidden="true">
+          <div class="radar-node node-one"></div>
+          <div class="radar-node node-two"></div>
+          <div class="radar-node node-three"></div>
+          <div class="radar-core">AX</div>
+        </div>
+      </section>
+
+      <section class="auth-card" aria-live="polite">
+        <form id="credentialsForm" class="auth-step">
+          <div class="step-label">Step 1</div>
+          <h2>Enter your login details</h2>
+          <label>
+            <span>Email ID</span>
+            <input id="emailInput" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="passwordInput" name="password" type="password" autocomplete="new-password" placeholder="Create a password" minlength="6" required>
+          </label>
+          <button class="primary-button" type="submit">Next</button>
+        </form>
+
+        <form id="profileForm" class="auth-step hidden">
+          <div class="step-label">Step 2</div>
+          <h2>Complete your profile</h2>
+          <label>
+            <span>Name</span>
+            <input id="nameInput" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+          </label>
+          <label>
+            <span>Mobile number</span>
+            <input id="mobileInput" name="mobile" type="tel" autocomplete="tel" placeholder="+91 98765 43210" required>
+          </label>
+          <button class="primary-button" type="submit">Send login link</button>
+        </form>
+
+        <div id="linkSentPanel" class="auth-step hidden">
+          <div class="step-label">Email sent</div>
+          <h2>Check your email</h2>
+          <p id="linkSentText" class="muted-text"></p>
+          <a id="previewLoginLink" class="primary-button inline-button" href="#">Open login link</a>
+          <button id="backToProfileButton" class="ghost-button" type="button">Edit details</button>
+        </div>
+
+        <div id="confirmLoginPanel" class="auth-step hidden">
+          <div class="step-label">Confirm login</div>
+          <h2>Do you want to login to this app?</h2>
+          <p id="confirmLoginText" class="muted-text"></p>
+          <button id="confirmLoginButton" class="primary-button" type="button">Okay</button>
+        </div>
+
+        <p id="authError" class="error-text" role="alert"></p>
+      </section>
+    </div>
+
+    <div id="appShell" class="app-shell hidden">
+      <aside class="sidebar">
+        <div class="logo-lockup">
+          <div class="aurexis-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div>
+            <strong>Aurexis</strong>
+            <small>AI Workspace</small>
+          </div>
+        </div>
+
+        <nav class="app-nav" aria-label="Main sections">
+          <button class="nav-button active" type="button" data-view="chat">
+            <span class="nav-icon">AI</span>
+            <span>Aurexis Chatbot</span>
+          </button>
+          <button class="nav-button" type="button" data-view="projects">
+            <span class="nav-icon">PR</span>
+            <span>Project</span>
+          </button>
+          <button class="nav-button" type="button" data-view="images">
+            <span class="nav-icon">IM</span>
+            <span>Image</span>
+          </button>
+          <button class="nav-button" type="button" data-view="settings">
+            <span class="nav-icon">ST</span>
+            <span>Settings</span>
+          </button>
+          <button id="adminNavButton" class="nav-button hidden" type="button" data-view="admin">
+            <span class="nav-icon">AD</span>
+            <span>Admin</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div>
+            <small>Signed in as</small>
+            <strong id="signedInName">Aurexis user</strong>
+          </div>
+          <button id="signOutButton" class="icon-button" type="button" title="Sign out" aria-label="Sign out">↗</button>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <section id="chatView" class="view active-view">
+          <header class="view-header">
+            <div>
+              <p class="eyebrow">AI chatbot name Aurexis</p>
+              <h2>Aurexis AI Chatbot</h2>
+            </div>
+            <div class="header-controls">
+              <label class="select-label">
+                <span>Project</span>
+                <select id="chatProjectSelect"></select>
+              </label>
+              <label class="select-label">
+                <span>Ollama model</span>
+                <select id="modelSelect"></select>
+              </label>
+              <span id="ollamaStatus" class="status-pill">Checking Ollama</span>
+            </div>
+          </header>
+
+          <div class="model-strip" id="modelStrip" aria-label="Recommended Ollama models"></div>
+
+          <div class="chat-layout">
+            <aside class="chats-panel">
+              <button id="newChatButton" class="primary-button compact-button" type="button">New Chat</button>
+              <h3>Chats</h3>
+              <div id="chatList" class="chat-list"></div>
+            </aside>
+
+            <section class="chat-workspace" aria-label="Aurexis conversation">
+              <div id="messageList" class="message-list"></div>
+              <form id="chatForm" class="prompt-bar">
+                <textarea id="chatPrompt" rows="1" placeholder="Ask Aurexis anything, or ask it to create an image..." required></textarea>
+                <button class="send-button" type="submit" aria-label="Send message">Send</button>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section id="projectsView" class="view">
+          <header class="view-header">
+            <div>
+              <p class="eyebrow">Workspace</p>
+              <h2>Project</h2>
+            </div>
+          </header>
+
+          <div class="project-layout">
+            <form id="projectForm" class="project-form">
+              <h3>Create a project</h3>
+              <label>
+                <span>Project name</span>
+                <input id="projectNameInput" type="text" placeholder="Product launch, study plan, client work..." required>
+              </label>
+              <label>
+                <span>Project details</span>
+                <textarea id="projectDetailsInput" rows="5" placeholder="Add goals, notes, links, or anything Aurexis should remember for this project."></textarea>
+              </label>
+              <button class="primary-button" type="submit">Create Project</button>
+            </form>
+
+            <div>
+              <div class="section-heading">
+                <h3>Your projects</h3>
+                <span id="projectCount">0 projects</span>
+              </div>
+              <div id="projectGrid" class="project-grid"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="imagesView" class="view">
+          <header class="view-header">
+            <div>
+              <p class="eyebrow">Visual creation</p>
+              <h2>Image</h2>
+            </div>
+          </header>
+
+          <form id="imageForm" class="image-form">
+            <textarea id="imagePrompt" rows="2" placeholder="Write an image prompt..." required></textarea>
+            <button class="primary-button" type="submit">Create Image</button>
+          </form>
+
+          <div class="section-heading">
+            <h3>Generated images</h3>
+            <span id="imageCount">0 images</span>
+          </div>
+          <div id="imageGrid" class="image-grid"></div>
+        </section>
+
+        <section id="settingsView" class="view">
+          <header class="view-header">
+            <div>
+              <p class="eyebrow">App controls</p>
+              <h2>Settings</h2>
+            </div>
+          </header>
+
+          <div class="settings-grid">
+            <article class="settings-card appearance-card">
+              <div class="section-heading">
+                <h3>Appearance</h3>
+                <span>Background mode</span>
+              </div>
+              <label class="theme-switch">
+                <span>
+                  <strong id="themeModeLabel">Light mode</strong>
+                  <small>Switch background mode</small>
+                </span>
+                <input id="themeModeSwitch" type="checkbox" role="switch" aria-label="Use dark mode">
+                <span class="theme-switch-track" aria-hidden="true">
+                  <span>Light</span>
+                  <span>Dark</span>
+                  <span class="theme-switch-thumb"></span>
+                </span>
+              </label>
+            </article>
+
+            <article class="settings-card account-card">
+              <div class="section-heading">
+                <h3>Account</h3>
+                <span>Saved login</span>
+              </div>
+              <dl class="account-details">
+                <div>
+                  <dt>Name</dt>
+                  <dd id="settingsName">Aurexis user</dd>
+                </div>
+                <div>
+                  <dt>Email</dt>
+                  <dd id="settingsEmail">Not added</dd>
+                </div>
+                <div>
+                  <dt>Mobile</dt>
+                  <dd id="settingsMobile">Not added</dd>
+                </div>
+              </dl>
+              <p class="muted-text">Your registered details are saved in this app, so you do not need to login again on this laptop.</p>
+            </article>
+
+            <article class="settings-card pro-card">
+              <div>
+                <p class="eyebrow">Aurexis Pro</p>
+                <h3>$25 per year</h3>
+                <p class="muted-text">Pro helps projects move faster and asks Aurexis to keep replies sharper, warmer, and more inventive.</p>
+              </div>
+              <div class="pro-layout">
+                <div class="qr-frame">
+                  <img id="proQrImage" alt="Aurexis Pro payment QR code">
+                </div>
+                <div class="pro-actions">
+                  <ul class="benefit-list">
+                    <li>Faster project setup</li>
+                    <li>More inventive replies</li>
+                    <li>Priority creative prompts</li>
+                    <li>Better project memory prompts</li>
+                  </ul>
+                  <a id="proPaymentLink" class="primary-button inline-button" href="#" target="_blank" rel="noreferrer">Open payment page</a>
+                  <button id="markProButton" class="ghost-button" type="button">Mark Pro active</button>
+                </div>
+              </div>
+              <span id="proStatus" class="status-pill">Free plan</span>
+            </article>
+
+            <article class="settings-card">
+              <div class="section-heading">
+                <h3>Co-work</h3>
+                <span>Team style</span>
+              </div>
+              <div class="toggle-list">
+                <label class="toggle-row">
+                  <input id="coWorkToggle" type="checkbox">
+                  <span>
+                    <strong>Enable co-work mode</strong>
+                    <small>Use friendlier brainstorming, shared project language, and collaborative next steps.</small>
+                  </span>
+                </label>
+                <label class="toggle-row">
+                  <input id="projectSpeedToggle" type="checkbox">
+                  <span>
+                    <strong>Faster project replies</strong>
+                    <small>Ask Aurexis to answer with shorter action paths when a project is selected.</small>
+                  </span>
+                </label>
+              </div>
+            </article>
+
+            <article class="settings-card">
+              <div class="section-heading">
+                <h3>Code</h3>
+                <span>Builder mode</span>
+              </div>
+              <div class="toggle-list">
+                <label class="toggle-row">
+                  <input id="codeModeToggle" type="checkbox">
+                  <span>
+                    <strong>Code-aware replies</strong>
+                    <small>When code is discussed, Aurexis keeps answers practical, structured, and implementation-ready.</small>
+                  </span>
+                </label>
+                <label class="toggle-row">
+                  <input id="friendlyToggle" type="checkbox">
+                  <span>
+                    <strong>Very friendly chatbot</strong>
+                    <small>Keep the Aurexis tone warm, encouraging, and easy to talk with.</small>
+                  </span>
+                </label>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="adminView" class="view">
+          <header class="view-header">
+            <div>
+              <p class="eyebrow">Local laptop admin</p>
+              <h2>Admin</h2>
+            </div>
+            <button id="refreshAdminButton" class="ghost-button" type="button">Refresh</button>
+          </header>
+
+          <div class="stat-grid">
+            <article>
+              <strong id="adminUserCount">0</strong>
+              <span>registered users</span>
+            </article>
+            <article>
+              <strong id="adminProCount">0</strong>
+              <span>Pro users</span>
+            </article>
+            <article>
+              <strong id="adminDeviceStatus">This laptop</strong>
+              <span>admin access</span>
+            </article>
+          </div>
+
+          <div class="admin-panel">
+            <div class="section-heading">
+              <h3>Registered details</h3>
+              <span id="adminUpdatedAt">Not synced yet</span>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Plan</th>
+                    <th>Last login</th>
+                    <th>Device</th>
+                  </tr>
+                </thead>
+                <tbody id="adminUsersTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
